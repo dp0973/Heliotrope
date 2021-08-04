@@ -10,7 +10,7 @@ hitomi_info = Blueprint("hitomi_info", url_prefix="/info")
 class HitomiInfoView(HTTPMethodView):
     async def get(self, request: HeliotropeRequest, index_id: int) -> HTTPResponse:
         if info := await request.app.ctx.nosql_query.find_info(index_id):
-            return json("status", 200, **info)
+            return json({"status", 200, **info})
 
         return request.app.ctx.response.not_found
 
