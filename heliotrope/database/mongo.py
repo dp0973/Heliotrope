@@ -50,7 +50,8 @@ class NoSQLQuery:
 
     async def find_info(self, index_id: int) -> dict[str, Any]:
         return cast(
-            dict[str, Any], await self.__collection.find_one({"index": index_id})
+            dict[str, Any],
+            await self.__collection.find_one({"index": index_id}, {"_id": 0}),
         )
 
     async def insert_info(self, info: dict[str, Any]) -> None:

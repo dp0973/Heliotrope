@@ -23,6 +23,7 @@ class Mirroring(HitomiRequest):
         session = ClientSession(**kwargs)
         mirroring = cls(sql_query, nosql_query, session)
         mirroring.session.headers.update(mirroring.headers)
+        mirroring.total = len(await mirroring.__sql_query.get_index())
         return mirroring
 
     async def compare_index_list(self) -> list[int]:
@@ -32,7 +33,6 @@ class Mirroring(HitomiRequest):
 
     async def mirroring(self, index_list: list[int]) -> None:
         for index in index_list:
-            print(index)
             if galleryinfo := await self.get_galleyinfo(index):
                 if not await self.__sql_query.get_galleryinfo(index):
                     await self.__sql_query.add_galleryinfo(galleryinfo)
@@ -48,5 +48,5 @@ class Mirroring(HitomiRequest):
         while True:
             if index_list := await self.compare_index_list():
                 await self.mirroring(index_list)
-
+                self.total = len(await self.__sql_query.get_index())
             await sleep(delay)
