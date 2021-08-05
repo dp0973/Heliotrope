@@ -7,7 +7,11 @@ from motor.motor_asyncio import AsyncIOMotorClient  # type: ignore
 
 class NoSQLQuery:
     def __init__(self, mongo_db_url: str) -> None:
-        self.__collection = AsyncIOMotorClient(mongo_db_url).hitomi.info
+        self.__client: Any = AsyncIOMotorClient(mongo_db_url)
+        self.__collection = self.__client.hitomi.info
+
+    def close(self):
+        self.__client.close()
 
     async def get_info_list(
         self, offset: int = 0, limit: int = 15

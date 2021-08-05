@@ -1,4 +1,5 @@
 from asyncio.events import AbstractEventLoop
+from asyncio.tasks import create_task
 from os import environ, getenv
 
 from aiohttp.client import ClientSession
@@ -23,7 +24,9 @@ heliotrope = Sanic("heliotrope")
 heliotrope.blueprint(view)  # type: ignore
 
 
-async def setup_heliotrope(heliotrope: Heliotrope) -> None:
+# TODO: Type hint
+@heliotrope.main_process_start  # type: ignore
+async def start(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     if not getenv("IS_TEST"):
         init(
             dsn=environ["SENTRY_DSN"],
@@ -32,27 +35,29 @@ async def setup_heliotrope(heliotrope: Heliotrope) -> None:
         )
         heliotrope.config.FORWARDED_SECRET = environ["FORWARDED_SECRET"]
 
-    heliotrope.config.FALLBACK_ERROR_FORMAT = "json"
-    heliotrope.ctx.nosql_query = NoSQLQuery(environ["MONGO_DB_URL"])
     await Tortoise.init(
         db_url=environ["DB_URL"],
         modules={"models": ["heliotrope.database.models.hitomi"]},
     )
     await Tortoise.generate_schemas()
+    heliotrope.config.FALLBACK_ERROR_FORMAT = "json"
     heliotrope.ctx.sql_query = SQLQuery()
-
-
-# TODO: Type hint
-@heliotrope.main_process_start  # type: ignore
-async def start(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
-    await setup_heliotrope(heliotrope)
+    heliotrope.ctx.nosql_query = NoSQLQuery(environ["MONGO_DB_URL"])
     heliotrope.ctx.response = Response()
-    heliotrope.ctx.hitomi_request = await HitomiRequest.setup()
     heliotrope.ctx.base_request = BaseRequest(ClientSession())
-    heliotrope.add_task(Mirroring.setup(heliotrope=heliotrope))
+    heliotrope.ctx.hitomi_request = await HitomiRequest.setup()
+    heliotrope.ctx.mirroring = await Mirroring.setup(
+        sql_query=heliotrope.ctx.sql_query, nosql_query=heliotrope.ctx.nosql_query
+    )
+    heliotrope.ctx.mirroring_task = create_task(heliotrope.ctx.mirroring.task(3600))
 
 
 # TODO: Type hint
 @heliotrope.main_process_stop  # type: ignore
 async def stop(heliotrope: Heliotrope, loop: AbstractEventLoop) -> None:
     await Tortoise.close_connections()
+    heliotrope.ctx.nosql_query.close()
+    await heliotrope.ctx.base_request.close()
+    await heliotrope.ctx.hitomi_request.close()
+    await heliotrope.ctx.mirroring.close()
+    heliotrope.ctx.mirroring_task.cancel()

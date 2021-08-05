@@ -1,3 +1,6 @@
+from asyncio.tasks import Task
+from typing import NoReturn
+from heliotrope.tasks.mirroring import Mirroring
 from types import SimpleNamespace
 
 from sanic.app import Sanic
@@ -17,6 +20,8 @@ class HeliotropeContext(SimpleNamespace):
     response: Response
     hitomi_request: HitomiRequest
     base_request: BaseRequest
+    mirroring: Mirroring
+    mirroring_task: Task[NoReturn]
 
 
 class Heliotrope(Sanic):
