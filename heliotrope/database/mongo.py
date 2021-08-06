@@ -10,7 +10,7 @@ class NoSQLQuery:
         self.__client: Any = AsyncIOMotorClient(mongo_db_url)
         self.__collection = self.__client.hitomi.info
 
-    def close(self):
+    def close(self) -> None:
         self.__client.close()
 
     async def get_info_list(

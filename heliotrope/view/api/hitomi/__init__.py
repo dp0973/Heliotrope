@@ -8,5 +8,10 @@ from heliotrope.view.api.hitomi.search import hitomi_search
 
 # NOTE: Will fixed
 hitomi_endpoint = Blueprint.group(
-    hitomi_galleryinfo, hitomi_images, hitomi_info, hitomi_list, hitomi_search, url_prefix="/hitomi"
+    hitomi_galleryinfo,
+    hitomi_images,
+    hitomi_info,
+    hitomi_list,
+    hitomi_search,
+    url_prefix="/hitomi",
 )
