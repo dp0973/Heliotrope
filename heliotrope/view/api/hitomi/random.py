@@ -4,7 +4,7 @@ from sanic.views import HTTPMethodView
 
 from heliotrope.sanic import HeliotropeRequest
 
-hitomi_info = Blueprint("hitomi_random", url_prefix="/random")
+hitomi_random = Blueprint("hitomi_random", url_prefix="/random")
 
 
 class HitomiInfoView(HTTPMethodView):
@@ -14,4 +14,4 @@ class HitomiInfoView(HTTPMethodView):
 
 
 # TODO: add_route is partially unknown and as_view is partially unknown Need PR Sanic
-hitomi_info.add_route(HitomiInfoView.as_view(), "")  # type: ignore
+hitomi_random.add_route(HitomiInfoView.as_view(), "")  # type: ignore

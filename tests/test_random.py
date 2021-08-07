@@ -9,5 +9,5 @@ def test_random(app: TestManager):
 
 
 def test_random_not_found(app: TestManager):
-    _, response = app.test_client.get(url)
+    _, response = app.test_client.get(url + "0")
     assert response.status == 404
