@@ -54,5 +54,17 @@ class NoSQLQuery:
             await self.__collection.find_one({"index": index_id}, {"_id": 0}),
         )
 
+    async def find_random_info(self) -> dict[str, Any]:
+        info = await self.__collection.aggregate(
+            [
+                {"$sample": {"size": 1}},
+                {"$project": {"_id": 0}},
+            ]
+        ).to_list(1)
+        return cast(
+            dict[str, Any],
+            info[0],
+        )
+
     async def insert_info(self, info: dict[str, Any]) -> None:
         return cast(None, await self.__collection.insert_one(info))
