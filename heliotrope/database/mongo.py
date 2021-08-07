@@ -57,7 +57,7 @@ class NoSQLQuery:
     async def find_random_info(self) -> dict[str, Any]:
         return cast(
             dict[str, Any],
-            await self.__collection.aggregate(
+            self.__collection.aggregate(
                 [
                     {"$sample": {"size": 1}},
                     {"_id": 0},
