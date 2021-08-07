@@ -62,7 +62,7 @@ class NoSQLQuery:
                     {"$sample": {"size": 1}},
                     {"$project": {"_id": 0}},
                 ]
-            ).to_list(1),
+            ).to_list(1)[0],
         )
 
     async def insert_info(self, info: dict[str, Any]) -> None:
