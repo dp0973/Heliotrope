@@ -60,7 +60,7 @@ class NoSQLQuery:
             await self.__collection.aggregate(
                 [
                     {"$sample": {"size": 1}},
-                    {"_id": 0},
+                    {"$project": {"_id": 0}},
                 ]
             ).to_list(1),
         )
