@@ -9,10 +9,8 @@ hitomi_info = Blueprint("hitomi_random", url_prefix="/random")
 
 class HitomiInfoView(HTTPMethodView):
     async def get(self, request: HeliotropeRequest) -> HTTPResponse:
-        if info := await request.app.ctx.nosql_query.find_random_info():
-            return json({"status": 200, **info})
-
-        return request.app.ctx.response.not_found
+        info = await request.app.ctx.nosql_query.find_random_info()
+        return json({"status": 200, **info})
 
 
 # TODO: add_route is partially unknown and as_view is partially unknown Need PR Sanic
