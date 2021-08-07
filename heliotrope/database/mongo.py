@@ -55,14 +55,15 @@ class NoSQLQuery:
         )
 
     async def find_random_info(self) -> dict[str, Any]:
+        info = await self.__collection.aggregate(
+            [
+                {"$sample": {"size": 1}},
+                {"$project": {"_id": 0}},
+            ]
+        ).to_list(1)
         return cast(
             dict[str, Any],
-            await self.__collection.aggregate(
-                [
-                    {"$sample": {"size": 1}},
-                    {"$project": {"_id": 0}},
-                ]
-            ).to_list(1)[0],
+            info[0],
         )
 
     async def insert_info(self, info: dict[str, Any]) -> None:
