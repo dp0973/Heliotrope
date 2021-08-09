@@ -1,6 +1,5 @@
 # Heliotrope
 
-[![codecov](https://codecov.io/gh/Saebasol/Heliotrope/branch/master/graph/badge.svg?token=VTL1Z4abB7)](https://codecov.io/gh/Saebasol/Heliotrope)
 [![Code Style](https://img.shields.io/badge/code%20style-black-black)](https://github.com/psf/black)
 > Hitomi.la mirror api
 
@@ -12,4 +11,4 @@
 - Galleryinfo, Info auto mirroring.
 - Pixiv.net, Hitomi.la image proxying.
 - Search by title.
-- Production ready.
+- Production ready
