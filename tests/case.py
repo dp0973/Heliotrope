@@ -1,4 +1,4 @@
-galleyinfo = {
+galleryinfo = {
     "status": 200,
     "language_localname": "한국어",
     "language": "korean",

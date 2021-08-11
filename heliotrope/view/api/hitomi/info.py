@@ -1,6 +1,7 @@
 from sanic.blueprints import Blueprint
 from sanic.response import HTTPResponse, json
 from sanic.views import HTTPMethodView
+from sanic_openapi import openapi  # type: ignore
 
 from heliotrope.sanic import HeliotropeRequest
 
@@ -8,6 +9,8 @@ hitomi_info = Blueprint("hitomi_info", url_prefix="/info")
 
 
 class HitomiInfoView(HTTPMethodView):
+    @openapi.summary("Get hitomi info")  # type: ignore
+    @openapi.tag("hitomi")  # type: ignore
     async def get(self, request: HeliotropeRequest, index_id: int) -> HTTPResponse:
         if info := await request.app.ctx.nosql_query.find_info(index_id):
             return json({"status": 200, **info})

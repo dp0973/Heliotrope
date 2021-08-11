@@ -1,4 +1,3 @@
-from heliotrope.hitomi.models import HitomiGalleryinfo
 import os
 
 from _pytest.config import Config
@@ -9,8 +8,9 @@ from tortoise import Tortoise, run_async
 
 from heliotrope.database.mongo import NoSQLQuery
 from heliotrope.database.query import SQLQuery
+from heliotrope.hitomi.models import HitomiGalleryinfo
 from heliotrope.server import heliotrope
-from tests.case import galleyinfo, info
+from tests.case import galleryinfo, info
 
 
 def pytest_configure(config: Config):
@@ -26,7 +26,7 @@ def pytest_configure(config: Config):
         )
         await Tortoise.generate_schemas()
         orm = SQLQuery()
-        await orm.add_galleryinfo(HitomiGalleryinfo(galleyinfo))
+        await orm.add_galleryinfo(HitomiGalleryinfo(galleryinfo))
         await mongo.insert_info(info)
 
     run_async(query())
