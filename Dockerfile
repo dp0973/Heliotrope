@@ -1,9 +1,9 @@
 # first stage
 FROM python:3.9 AS builder
-COPY requirements.txt .
+COPY ./requirements/deps.txt .
 
 # install dependencies to the local user directory (eg. /root/.local)
-RUN pip install --user -r requirements.txt
+RUN pip install --user -r deps.txt
 
 # second unnamed stage
 FROM python:3.9-slim
