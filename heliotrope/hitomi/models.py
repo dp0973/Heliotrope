@@ -169,7 +169,9 @@ class HitomiInfo:
             for element in elements
         ]
 
-    def __parse_single_element(self, elements: Tag) -> Optional[dict[str, str]]:
+    def __parse_single_element(
+        self, elements: Optional[Tag]
+    ) -> Optional[dict[str, str]]:
         if not elements:
             return None
         return {

@@ -15,6 +15,9 @@ class HitomiInfoView(HTTPMethodView):
         if info := await request.app.ctx.nosql_query.find_info(index_id):
             return json({"status": 200, **info})
 
+        if requested_info := await request.app.ctx.hitomi_request.get_info(index_id):
+            return json({"status": 200, **requested_info.to_dict()})
+
         return request.app.ctx.response.not_found
 
 
