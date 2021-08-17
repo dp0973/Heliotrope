@@ -26,10 +26,35 @@ class NoSQLQuery:
         )
 
     async def search_info_list(
-        self, query: str, offset: int = 0, limit: int = 15
+        self, query: list[str], offset: int = 0, limit: int = 15
     ) -> Optional[tuple[dict[str, Any], int]]:
-        search_query = {"$search": {"text": {"query": query, "path": "title"}}}
-
+        search_query: dict[str, Any] = {"$search": {"compound": {"must": []}}}
+        for q in query:
+            if ":" not in q:
+                search_query["$search"]["compound"]["must"].append(
+                    {"text": {"query": q.replace("_", " "), "path": "title"}}
+                )
+                continue
+            tag_type, tag_name = q.split(":")
+            tag_value = tag_name.replace("_", " ")
+            if tag_type in [
+                "group",
+                "language",
+                "series",
+                "tags",
+                "type",
+                "artist",
+                "characters",
+                "female",
+                "male",
+                "tag",
+            ]:
+                gender_icon = {"female": " ♀", "male": " ♂"}
+                query_value = f"{tag_value}{gender_icon.get(tag_type, '')}"
+                tag_type = "tags" if tag_type in ["female", "male", "tag"] else tag_type
+                search_query["$search"]["compound"]["must"].append(
+                    {"text": {"query": query_value, "path": f"{tag_type}.value"}}
+                )
         if count := (
             await self.__collection.aggregate(
                 [search_query, {"$count": "count"}]
