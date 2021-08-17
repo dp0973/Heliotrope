@@ -1,6 +1,6 @@
 from asyncio.tasks import Task
 from types import SimpleNamespace
-from typing import NoReturn
+from typing import Any, NoReturn
 
 from sanic.app import Sanic
 from sanic.config import Config
@@ -32,3 +32,4 @@ class Heliotrope(Sanic):
 class HeliotropeRequest(Request):
     app: Heliotrope
     args: property
+    json: Any

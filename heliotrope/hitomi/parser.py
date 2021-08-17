@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from typing import Mapping, cast
+from typing import Mapping, Optional, cast
 
 from bs4 import BeautifulSoup  # type: ignore
-from bs4.element import Tag  # type: ignore
+from bs4.element import NavigableString, Tag  # type: ignore
 
 
 class HitomiBaseParser:
@@ -79,9 +79,9 @@ class HitomiTagParser(HitomiBaseParser):
         return type_element
 
     @property
-    def language_element(self) -> Tag:
+    def language_element(self) -> Optional[Tag]:
         language_element = self.infos[2].find("a")
-        assert isinstance(language_element, Tag)
+        assert not isinstance(language_element, NavigableString)
         return language_element
 
     @property

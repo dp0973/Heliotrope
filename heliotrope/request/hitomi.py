@@ -1,3 +1,4 @@
+from json import loads
 from struct import unpack
 from typing import Any, Mapping, Optional, cast
 from urllib.parse import urlparse
@@ -58,7 +59,7 @@ class HitomiRequest(BaseRequest):
 
         js_to_json = cast(
             HitomiGalleryinfoJSON,
-            str(response.returned).replace("var galleryinfo = ", ""),
+            loads(str(response.returned).replace("var galleryinfo = ", "")),
         )
         return HitomiGalleryinfo(js_to_json)
 

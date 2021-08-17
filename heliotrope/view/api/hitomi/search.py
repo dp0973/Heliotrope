@@ -11,18 +11,16 @@ hitomi_search = Blueprint("hitomi_search", url_prefix="/search")
 class HitomiSearchView(HTTPMethodView):
     @openapi.summary("Get search result in hitomi")  # type: ignore
     @openapi.tag("hitomi")  # type: ignore
-    @openapi.parameter("q", str, location="query", required=True)  # type: ignore
-    @openapi.parameter("offset", int, location="query")  # type: ignore
-    async def get(self, request: HeliotropeRequest) -> HTTPResponse:
+    async def post(self, request: HeliotropeRequest) -> HTTPResponse:
         offset = (
             int(offset) - 1
-            if (offset := request.args.get("offset"))
+            if (offset := request.json.get("offset"))
             and (offset.isdigit())
             and not (int(offset) - 1 < 0)
             else 0
         )
 
-        if (query := request.args.get("q")) and (
+        if (query := request.json.get("query")) and (
             search_result := await request.app.ctx.nosql_query.search_info_list(
                 query, offset
             )
